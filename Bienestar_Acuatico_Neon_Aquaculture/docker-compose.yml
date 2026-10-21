@@ -1,0 +1,33 @@
+# =====================================================================
+#  PostgreSQL para el prototipo académico "Bienestar Acuático"
+#  (Metodología ICA v2.0 · 2024 — NO es un sistema oficial del ICA)
+# ---------------------------------------------------------------------
+#  Uso rápido:
+#    1) docker compose up -d              # levanta PostgreSQL en localhost:5432
+#    2) cd backend && npm install && npm run setup   # migra + siembra catálogos
+#    3) cd backend && npm start            # API en http://localhost:4000
+#
+#  Las credenciales coinciden con backend/.env.example. Si cambias
+#  POSTGRES_PASSWORD aquí, ajusta DATABASE_URL en backend/.env.
+# =====================================================================
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bienestar_acuatico_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bienestar_acuatico
+    ports:
+      - "5432:5432"
+    volumes:
+      - bienestar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bienestar_acuatico"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  bienestar_pgdata:
