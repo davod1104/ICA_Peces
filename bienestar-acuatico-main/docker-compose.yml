@@ -10,24 +10,25 @@
 #  Las credenciales coinciden con backend/.env.example. Si cambias
 #  POSTGRES_PASSWORD aquí, ajusta DATABASE_URL en backend/.env.
 # =====================================================================
+version: '3.8'
+
 services:
   db:
     image: postgres:16-alpine
-    container_name: bienestar_ejecutivo_db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bienestar_ejecutivo
-    ports:
-      - "5433:5432"
-    volumes:
-      - bienestar_ejecutivo_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d bienestar_ejecutivo"]
-      interval: 5s
-      timeout: 5s
-      retries: 12
+    # ... (mantén tus configuraciones de entorno y puertos de postgres aquí)
 
-volumes:
-  bienestar_ejecutivo_pgdata:
+  backend:
+    image: davidf1104/bienestar-backend:latest # <--- Cambio clave
+    ports:
+      - "4100:4100"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  frontend:
+    image: davidf1104/bienestar-frontend:latest # <--- Cambio clave
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
